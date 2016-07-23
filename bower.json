@@ -1,0 +1,21 @@
+{
+  "name": "botdroid",
+  "description": "",
+  "main": "index.js",
+  "authors": [
+    "Jeremie Girault <jeremie.girault@gmail.com>"
+  ],
+  "license": "ISC",
+  "homepage": "",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "minEmoji": "^1.1.2"
+  }
+}
