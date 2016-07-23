@@ -1,4 +1,28 @@
 
+#botdroid-header {
+  margin: 15px;
+  margin-left: 25px;
+  margin-right: 25px;
+}
+
+#botdroid-header:after {
+  visibility: hidden;
+  display: block;
+  font-size: 0;
+  content: " ";
+  clear: both;
+  height: 0;
+}
+
+#botdroid-title {
+  font-weight: bold;
+  float: left;
+}
+
+#botdroid-header-close {
+  float: right;
+}
+
 #botdroid-textinput {
 
 	width: 90%;

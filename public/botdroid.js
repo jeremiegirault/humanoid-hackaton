@@ -1,10 +1,13 @@
 
 $('#botdroid-box').remove();
 $('head link[href*="botdroid.css"]').remove(); // remove existing css
+$('head link[href*="minEmoji2.css"]').remove();
+$('head script[src*="jMinEmoji2.min.js"]').remove();
 
 var host = "http://localhost:8080";
 var apiHost = "http://192.168.1.106/"
 var BotDroid = function() {};
+var currentQuery = 'dont-understand';
 
 // ---------- Chat field ----------
 var chatField = $('<input id="botdroid-textinput" type="text">');
@@ -32,9 +35,15 @@ chatList.css({
 	overflow: 'scroll'
 });
 
+// ---------- Chat Header ----------
+var chatHeader = $('<div id="botdroid-header">');
+chatHeader.append('<span id="botdroid-title">Gilloux da b0t!</span>');
+var closeButton = $('<a id="botdroid-header-close">X</a>');
+chatHeader.append(closeButton);
+
 // ---------- Chat box ----------
 var chatBox = $('<div id="botdroid-box">');
-chatBox.append(chatList, chatField);
+chatBox.append(chatHeader, chatList, chatField);
 
 // ---------- BotDroid logic ----------
 
@@ -43,12 +52,17 @@ BotDroid.createButtons = function(buttons) {
 
 	$.map(buttons, function(value, key) {
 			var btn = $('<a href="#" class="bubble">');
-			btn.text(value);
+			btn.text(value).minEmoji();
 			btn.click(function() {
-				BotDroid.removeAnimated(buttonList.parent()); // hack: removing the bubble around the button list
-				BotDroid.sendUserMessage(value, function() {
-					BotDroid.newQuery(key);
+
+				// hack: removing the bubble around the button list
+				BotDroid.removeAnimated(buttonList.parent(), function() {
+					//BotDroid.removeAnimated(); 
+					BotDroid.sendUserMessage(value, function() {
+						BotDroid.newQuery(key);
+					});
 				});
+				
 			});
 			return btn;
 		})
@@ -112,7 +126,7 @@ BotDroid.onText = function(text) {
 
 BotDroid.handleTextResponse = function(item) {
 	var span = $('<span>');
-	span.text(item);
+	span.text(item).minEmoji();
 	BotDroid.sendBotMessage(span);
 };
 
@@ -134,7 +148,7 @@ BotDroid.handleResponse = function(data) {
 		'button': BotDroid.handleButtonResponse,
 		'image': BotDroid.handleImageResponse
 	};
-	const delay = 600;
+	const delay = 400;
 
 	data.forEach(function(item, index) {
 		setTimeout(function() {
@@ -148,23 +162,38 @@ BotDroid.handleResponse = function(data) {
 };
 
 BotDroid.newQuery = function(key) {
-	var endpoint = apiHost + '?question='+encodeURIComponent(key);
+	var endpoint = apiHost + '?question='+encodeURIComponent(currentQuery)
+	if (key) {
+		endpoint = endpoint + '&key='+encodeURIComponent(key);
+	}
+
+	console.log('> GET ' + endpoint);
+
 	var loader = BotDroid.addLoader();
+	var start = new Date().getTime();
+	const minWaitTime = 1500;
+
 	$.get(endpoint, function(data) {
-		BotDroid.removeAnimated(loader, function() {
-			BotDroid.handleResponse(data);
-		});
+		var duration = (new Date().getTime() - start);
+		var remainingWaitTime = Math.max(0, minWaitTime - duration);
+		setTimeout(function() {
+			BotDroid.removeAnimated(loader, function() {
+				BotDroid.handleResponse(data);
+			});
+		}, remainingWaitTime);
 	});
 };
 
 BotDroid.start = function() {
-	BotDroid.newQuery('mood');
+	BotDroid.newQuery();
 };
 
 // ---------- Integration ----------
 
 // insert a reload query param to force reload the stylesheet
-$('head').append('<link rel="stylesheet" href="'+host+'/botdroid.css?reload='+encodeURIComponent(new Date())+'" type="text/css" />');
+$('head').append('<link rel="stylesheet" href="'+host+'/css/botdroid.css?reload='+encodeURIComponent(new Date())+'" type="text/css" />');
+$('head').append('<link rel="stylesheet" href="'+host+'/css/minEmoji2.css" type="text/css" />');
+$('head').append('<script type="text/javascript" src="'+host+'/js/jMinEmoji2.min.js" />');
 $(document.body).append(chatBox);
 chatField.focus();
 
