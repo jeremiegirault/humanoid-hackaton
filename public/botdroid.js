@@ -151,7 +151,7 @@
 	BotDroid.handleChangeQuestionResponse = function(item) {
 		BotDroid.inputKey = null;
 		currentQuery = item;
-		BotDroid.newQuery('input');
+		BotDroid.newQuery();
 	};
 
 	BotDroid.handleLinkResponse = function(item) {
