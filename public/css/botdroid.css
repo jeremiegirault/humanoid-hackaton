@@ -1,8 +1,11 @@
 
 #botdroid-header {
-  margin: 15px;
-  margin-left: 25px;
-  margin-right: 25px;
+  background-color: #e9573f;
+  color: #fff;
+  padding: 15px;
+  padding-left: 25px;
+  padding-right: 25px;
+  cursor: pointer;
 }
 
 #botdroid-header:after {
@@ -19,14 +22,20 @@
   float: left;
 }
 
-#botdroid-header-close {
+#botdroid-header-arrow {
   float: right;
+  transform: rotateZ(0deg);
+}
+
+#botdroid-box.closed .fa-angle-down {
+  transform: rotateZ(180deg);
 }
 
 #botdroid-textinput {
 
 	width: 90%;
 	
+  color: #444;
 	outline: none;
 	border: none;
 	border-bottom: 1px solid #ccc;
@@ -54,14 +63,13 @@
 	align-items: stretch;
 
 	background-color: #FFF;
-	border-top-left-radius: 15px;
-	border-top-right-radius: 15px;
 	box-shadow: 0px -4px 24px -4px #888;
 
-	padding-top: 10px;
 	padding-bottom: 10px;
 
 	font-size: 1.3em;
+
+  transition: transform 0.2s ease-in-out;
 }
 
 .button-list {
@@ -77,11 +85,13 @@
 	margin-left: 10px;
 	margin-right: 10px;
 
+  color: #FFF;
+
 	padding: 10px;
 }
 
 .bubble-user {
-	background-color: #AAA;
+	background-color: #CCC;
 	border-bottom-right-radius: 0px;
   margin-left: 100px;
 }
@@ -89,8 +99,7 @@
 .bubble-bot {
 	flex: 0 1 auto;
 	border-bottom-left-radius: 0;
-	background-color: #44A;
-	color: #FFF;
+	background-color: #e9573f;
   margin-right: 100px;
 }
 

@@ -38,8 +38,8 @@ chatList.css({
 // ---------- Chat Header ----------
 var chatHeader = $('<div id="botdroid-header">');
 chatHeader.append('<span id="botdroid-title">Gilloux da b0t!</span>');
-var closeButton = $('<a id="botdroid-header-close">X</a>');
-chatHeader.append(closeButton);
+var chatHeaderArrow = $('<i id="botdroid-header-arrow" class="fa fa-angle-down" aria-hidden="true"></i>');
+chatHeader.append(chatHeaderArrow);
 
 // ---------- Chat box ----------
 var chatBox = $('<div id="botdroid-box">');
@@ -157,6 +157,12 @@ BotDroid.handleChangeQuestionResponse = function(item) {
 	BotDroid.newQuery();
 };
 
+BotDroid.handleLinkResponse = function(item) {
+	var linkDiv = $('<div>');
+	span.text(item).minEmoji();
+	BotDroid.sendBotMessage(span);
+};
+
 BotDroid.handleResponse = function(data) {
 
 	const handlers = {
@@ -165,6 +171,7 @@ BotDroid.handleResponse = function(data) {
 		'image': BotDroid.handleImageResponse,
 		'input': BotDroid.handleInputResponse,
 		'change-question': BotDroid.handleChangeQuestionResponse,
+		'link': BotDroid.handleLinkResponse,
 	};
 	const delay = 400;
 
@@ -184,6 +191,9 @@ BotDroid.newQuery = function(key) {
 	if (key) {
 		endpoint = endpoint + '&key='+encodeURIComponent(key);
 	}
+	if ((history.state || {}).postId) {
+		endpoint = endpoint + '&pid='+encodeURIComponent(history.state.postId);
+	}
 
 	console.log('> GET ' + endpoint);
 
@@ -202,11 +212,26 @@ BotDroid.newQuery = function(key) {
 	});
 };
 
+BotDroid.toggleOpened = function() {
+	chatBox.toggleClass('closed');
+	if (chatBox.hasClass('closed')) {
+		chatBox.css({
+			transform: 'translate3d(0,'+(chatBox.outerHeight() - chatHeader.outerHeight())+'px,0)'
+		});
+	} else {
+		chatBox.css({
+			transform: 'translate3d(0,0,0)'
+		});
+	}
+};
+
 BotDroid.start = function() {
 	BotDroid.newQuery();
 };
 
 // ---------- Integration ----------
+
+chatHeader.click(BotDroid.toggleOpened);
 
 // insert a reload query param to force reload the stylesheet
 $('head').append('<link rel="stylesheet" href="'+host+'/css/botdroid.css?reload='+encodeURIComponent(new Date())+'" type="text/css" />');
