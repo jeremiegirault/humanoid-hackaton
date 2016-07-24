@@ -151,13 +151,20 @@ BotDroid.handleInputResponse = function(item) {
 	BotDroid.inputKey = item;
 };
 
+BotDroid.handleChangeQuestionResponse = function(item) {
+	BotDroid.inputKey = null;
+	currentQuery = item;
+	BotDroid.newQuery();
+};
+
 BotDroid.handleResponse = function(data) {
 
 	const handlers = {
 		'text': BotDroid.handleTextResponse,
 		'button': BotDroid.handleButtonResponse,
 		'image': BotDroid.handleImageResponse,
-		'input': BotDroid.handleInputResponse
+		'input': BotDroid.handleInputResponse,
+		'change-question': BotDroid.handleChangeQuestionResponse,
 	};
 	const delay = 400;
 
