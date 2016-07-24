@@ -42,7 +42,7 @@ var chatHeaderArrow = $('<i id="botdroid-header-arrow" class="fa fa-angle-down" 
 chatHeader.append(chatHeaderArrow);
 
 // ---------- Chat box ----------
-var chatBox = $('<div id="botdroid-box">');
+var chatBox = $('<div id="botdroid-box" class="closed">');
 chatBox.append(chatHeader, chatList, chatField);
 
 // ---------- BotDroid logic ----------
@@ -212,32 +212,54 @@ BotDroid.newQuery = function(key) {
 	});
 };
 
+BotDroid.once = true;
+
 BotDroid.toggleOpened = function() {
 	chatBox.toggleClass('closed');
 	if (chatBox.hasClass('closed')) {
 		chatBox.css({
 			transform: 'translate3d(0,'+(chatBox.outerHeight() - chatHeader.outerHeight())+'px,0)'
 		});
+		chatField.blur();
 	} else {
 		chatBox.css({
 			transform: 'translate3d(0,0,0)'
 		});
+
+		if (BotDroid.once) {
+			BotDroid.once = false;
+			BotDroid.newQuery();
+		}
+		setTimeout(function() {
+			chatField.focus();
+		}, 400);
 	}
 };
 
-BotDroid.start = function() {
-	BotDroid.newQuery();
-};
+BotDroid.prepare = function() {
+	chatHeader.click(BotDroid.toggleOpened);
+
+	$(window).scroll(function() {
+		if (chatBox.hasClass('closed') && !!NUM.infiniteScroll && NUM.infiniteScroll.percent > 40) {
+			BotDroid.toggleOpened();
+		}
+	});
+
+	setTimeout(function() {
+		chatBox.css({
+			transform: 'translate3d(0,'+(chatBox.outerHeight() - chatHeader.outerHeight())+'px,0)',
+			transition: 'transform 0.2s ease-in-out'
+		});
+	}, 100);
+}
 
 // ---------- Integration ----------
 
-chatHeader.click(BotDroid.toggleOpened);
 
 // insert a reload query param to force reload the stylesheet
 $('head').append('<link rel="stylesheet" href="'+host+'/css/botdroid.css?reload='+encodeURIComponent(new Date())+'" type="text/css" />');
 $('head').append('<link rel="stylesheet" href="'+host+'/css/minEmoji2.css" type="text/css" />');
 $('head').append('<script type="text/javascript" src="'+host+'/js/jMinEmoji2.min.js" />');
 $(document.body).append(chatBox);
-chatField.focus();
 
-BotDroid.start();
+BotDroid.prepare();
