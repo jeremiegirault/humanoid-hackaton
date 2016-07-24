@@ -107,6 +107,30 @@
   margin-right: 100px;
 }
 
+.botdroid-list-item {
+  border-bottom: 1px solid #fff;
+  margin-top: 10px;
+  padding-bottom: 10px;
+  text-align: center;
+}
+
+.botdroid-list-item a {
+  margin-left: 4px;
+}
+
+.botdroid-list-item a:hover {
+  font-weight: bold;
+}
+
+.botdroid-list :first-child {
+  margin-top: 0px;
+}
+
+.botdroid-list :last-child {
+  border-bottom: none;
+  padding-bottom: 0px;
+}
+
 .loader {
 	width: 50px;
 }

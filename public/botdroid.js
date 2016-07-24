@@ -7,7 +7,7 @@ $('head script[src*="jMinEmoji2.min.js"]').remove();
 var host = "http://localhost:8080";
 var apiHost = "http://192.168.1.106/"
 var BotDroid = function() {};
-var currentQuery = 'user-opinion';
+var currentQuery = 'mood';
 
 // ---------- Chat field ----------
 var chatField = $('<input id="botdroid-textinput" type="text">');
@@ -117,8 +117,9 @@ BotDroid.onText = function(text) {
 	BotDroid.addAnimated(newElement, function() {
 
 		if (BotDroid.inputKey) {
+			var key = BotDroid.inputKey;
 			BotDroid.inputKey = null; // quirky, send text in key
-			BotDroid.newQuery(text);
+			BotDroid.newQuery(key, { response: text });
 		} else {
 			// todo: dummy loader
 			var loader = BotDroid.addLoader(function() {
@@ -149,18 +150,43 @@ BotDroid.handleImageResponse = function(item) {
 
 BotDroid.handleInputResponse = function(item) {
 	BotDroid.inputKey = item;
+	chatField.focus();
 };
 
 BotDroid.handleChangeQuestionResponse = function(item) {
 	BotDroid.inputKey = null;
 	currentQuery = item;
-	BotDroid.newQuery();
+	BotDroid.newQuery('input');
 };
 
 BotDroid.handleLinkResponse = function(item) {
-	var linkDiv = $('<div>');
-	span.text(item).minEmoji();
-	BotDroid.sendBotMessage(span);
+	var linkDiv = $('<div class="botdroid-list">');
+
+	var firstClick = true;
+	item
+		.map(function(item) {
+			console.table(item);
+			var link = $('<a target="_blank">');
+			link.text(item.title);
+			link.prop('href', item.url);
+			link.click(function() {
+				if (firstClick) {
+					firstClick = false;
+					BotDroid.newQuery('input', {
+						url: item.url,
+						succeed: true
+					});
+				}
+			});
+			var itemElmt = $('<div class="botdroid-list-item">');
+			itemElmt.append(link);
+			return itemElmt;
+		})
+		.forEach(function(item) {
+			linkDiv.append(item);
+		});
+	
+	BotDroid.sendBotMessage(linkDiv);
 };
 
 BotDroid.handleResponse = function(data) {
@@ -186,13 +212,19 @@ BotDroid.handleResponse = function(data) {
 	});
 };
 
-BotDroid.newQuery = function(key) {
+BotDroid.newQuery = function(key, otherArgs) {
 	var endpoint = apiHost + '?question='+encodeURIComponent(currentQuery)
 	if (key) {
 		endpoint = endpoint + '&key='+encodeURIComponent(key);
 	}
 	if ((history.state || {}).postId) {
 		endpoint = endpoint + '&pid='+encodeURIComponent(history.state.postId);
+	}
+
+	if (!!otherArgs) {
+		$.each(otherArgs, function(key, value) {
+			endpoint = endpoint + '&'+encodeURIComponent(key)+'='+encodeURIComponent(value);
+		});
 	}
 
 	console.log('> GET ' + endpoint);
