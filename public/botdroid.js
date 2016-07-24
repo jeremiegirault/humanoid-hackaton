@@ -48,10 +48,10 @@
 	// ---------- BotDroid logic ----------
 
 	BotDroid.createButtons = function(buttons) {
-		var buttonList = $('<div class="button-list">');
+		var buttonList = $('<div class="botdroid-button-list">');
 
 		$.map(buttons, function(value, key) {
-				var btn = $('<a href="#" class="bubble">');
+				var btn = $('<a href="#" class="botdroid-button-list-item">');
 				btn.text(value).minEmoji();
 				btn.click(function() {
 

@@ -77,10 +77,28 @@
   transform: translate3d(0, 1000px, 0);
 }
 
-.button-list {
+.botdroid-button-list {
 	display: flex;
 	flex-direction: row;
 	justify-content: space-around;
+  text-align: center;
+}
+
+.botdroid-button-list a {
+  flex: 1 1 auto;
+  border-right: 1px solid rgba(255,255,255,0.3);
+}
+
+.botdroid-button-list a:hover {
+  font-weight: bold;
+}
+
+.botdroid-button-list a:hover .em {
+  transform: scale(1.2, 1.2);
+}
+
+.botdroid-button-list :last-child {
+  border-right: none;
 }
 
 .bubble {
