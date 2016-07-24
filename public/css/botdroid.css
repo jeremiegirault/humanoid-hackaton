@@ -8,6 +8,10 @@
   cursor: pointer;
 }
 
+#botdroid-list {
+  padding-bottom: 15px;
+}
+
 #botdroid-header:after {
   visibility: hidden;
   display: block;
