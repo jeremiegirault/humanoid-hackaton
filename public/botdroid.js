@@ -37,7 +37,7 @@
 
 	// ---------- Chat Header ----------
 	var chatHeader = $('<div id="botdroid-header">');
-	chatHeader.append('<span id="botdroid-title">Gilloux da b0t!</span>');
+	chatHeader.append('<span id="botdroid-title">Gilloux da b0t v0.13.37!</span>');
 	var chatHeaderArrow = $('<i id="botdroid-header-arrow" class="fa fa-angle-down" aria-hidden="true"></i>');
 	chatHeader.append(chatHeaderArrow);
 
