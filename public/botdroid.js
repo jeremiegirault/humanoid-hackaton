@@ -7,7 +7,7 @@ $('head script[src*="jMinEmoji2.min.js"]').remove();
 var host = "http://localhost:8080";
 var apiHost = "http://192.168.1.106/"
 var BotDroid = function() {};
-var currentQuery = 'dont-understand';
+var currentQuery = 'user-opinion';
 
 // ---------- Chat field ----------
 var chatField = $('<input id="botdroid-textinput" type="text">');
@@ -115,12 +115,18 @@ BotDroid.onText = function(text) {
 	var newElement = $('<div class="bubble bubble-user">');
 	newElement.text(text);
 	BotDroid.addAnimated(newElement, function() {
-		var loader = BotDroid.addLoader(function() {
-			//
-			setTimeout(function() {
-				BotDroid.removeAnimated(loader);
-			}, 1500);
-		});
+
+		if (BotDroid.inputKey) {
+			BotDroid.inputKey = null; // quirky, send text in key
+			BotDroid.newQuery(text);
+		} else {
+			// todo: dummy loader
+			var loader = BotDroid.addLoader(function() {
+				setTimeout(function() {
+					BotDroid.removeAnimated(loader);
+				}, 1500);
+			});
+		}
 	});
 };
 
@@ -141,12 +147,17 @@ BotDroid.handleImageResponse = function(item) {
 	BotDroid.sendBotMessage(img);
 };
 
+BotDroid.handleInputResponse = function(item) {
+	BotDroid.inputKey = item;
+};
+
 BotDroid.handleResponse = function(data) {
 
 	const handlers = {
 		'text': BotDroid.handleTextResponse,
 		'button': BotDroid.handleButtonResponse,
-		'image': BotDroid.handleImageResponse
+		'image': BotDroid.handleImageResponse,
+		'input': BotDroid.handleInputResponse
 	};
 	const delay = 400;
 
